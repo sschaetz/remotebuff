@@ -1,0 +1,81 @@
+#ifndef ALLOCATOR_HPP_INCLUDED
+#define ALLOCATOR_HPP_INCLUDED
+
+#include <cstddef>
+#include <stdlib.h>
+
+typedef char byte;
+
+namespace memory
+{
+  //////////////////////////////////////////////////////////////////////////////
+  // Allocate a raw buffer of bytes
+  //////////////////////////////////////////////////////////////////////////////
+  template<class T> struct allocator
+  {
+    ////////////////////////////////////////////////////////////////////////////
+    // Internal typedefs
+    ////////////////////////////////////////////////////////////////////////////
+    typedef T value_type;
+    typedef T* pointer;
+    typedef T const* const_pointer;
+    typedef T& reference;
+    typedef T const& const_reference;
+    typedef std::size_t size_type;
+    typedef std::ptrdiff_t difference_type;
+
+    template<class U> struct rebind { typedef allocator<U> other; };
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Ctor/dtor
+    ////////////////////////////////////////////////////////////////////////////
+                      allocator() {}
+    template<class U> allocator(allocator<U> const& ) {}
+                     ~allocator() {}
+
+    allocator& operator=(allocator const& ) { return *this; }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Address handling
+    ////////////////////////////////////////////////////////////////////////////
+    pointer address(reference r) { return &r; }
+    const_pointer address(const_reference r) { return &r; }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Size handling
+    ////////////////////////////////////////////////////////////////////////////
+    size_type max_size() const { return size_type(~0); }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Object lifetime handling
+    ////////////////////////////////////////////////////////////////////////////
+    void construct(pointer p, const T& t)
+    {
+      p = new (p) value_type(t);
+    }
+
+    void destroy(pointer p) { p->~value_type(); }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Memory handling
+    ////////////////////////////////////////////////////////////////////////////
+    pointer allocate( size_type c, const void* = 0 ) const
+    {
+      void* ptr = 0;
+#ifndef __SPU__
+      posix_memalign(&ptr, 16, c*sizeof(value_type));
+#else
+      ptr = _malloc_align(c*sizeof(value_type), 7);
+#endif
+      return reinterpret_cast<pointer>(ptr);
+    }
+
+    void deallocate(pointer p, size_type) const
+    {
+      free(p);
+    }
+
+  };
+}
+
+#endif // ALLOCATOR_HPP_INCLUDED
