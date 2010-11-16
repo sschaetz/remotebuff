@@ -30,7 +30,16 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="/home/schaetz/newbuff/" />
 		</Compiler>
+		<Unit filename="containers/image.hpp" />
+		<Unit filename="containers/local.hpp" />
+		<Unit filename="containers/remote.hpp" />
+		<Unit filename="iterators/remote_block_input_it.hpp" />
+		<Unit filename="main.cpp" />
+		<Unit filename="memory/allocator.hpp" />
+		<Unit filename="other/control.hpp" />
+		<Unit filename="sdk/addr64.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
