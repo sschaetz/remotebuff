@@ -35,7 +35,9 @@
 		<Unit filename="containers/image.hpp" />
 		<Unit filename="containers/local.hpp" />
 		<Unit filename="containers/remote.hpp" />
-		<Unit filename="iterators/remote_block_input_it.hpp" />
+		<Unit filename="iterators/remote_block_input_iterator.hpp" />
+		<Unit filename="iterators/remote_block_iterator.hpp" />
+		<Unit filename="iterators/remote_block_output_iterator.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="memory/allocator.hpp" />
 		<Unit filename="other/control.hpp" />

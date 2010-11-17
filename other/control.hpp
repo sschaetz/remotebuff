@@ -5,8 +5,8 @@
 
 struct control
 {
-  remote<float>::vector input;
-  remote<float>::vector output;
+  remote::vector<float> input;
+  remote::vector<float> output;
 };
 
 #endif // CONTROL_HPP_INCLUDED

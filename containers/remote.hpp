@@ -8,15 +8,17 @@
 #include <containers/local.hpp>
 #include <iterators/remote_block_iterator.hpp>
 
-template<class T>
+
 struct remote
 {
-  struct vector;
-  typedef typename remote<T>::vector VectorType;
-  typedef typename local<T>::vector VectorLocalType;
-
+  template<class T>
   struct vector
   {
+   public:
+
+    typedef typename remote::vector<T> VectorType;
+    typedef typename local::vector<T> VectorLocalType;
+
    private:
 
       ext::addr64 addr;
