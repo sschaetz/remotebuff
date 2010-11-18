@@ -82,7 +82,7 @@ public: // _____________________________________________________________________
    */
   inline void operator ++(int)
   {
-                 // we are finished with current buffer, start upload of new one
+                   // we are finished with current buffer, start laod of new one
     int32_t addr_offset = addr_offset_calc(n);
     if(addr_offset < 0)   // we don't fetch data if address offset is negative
     {

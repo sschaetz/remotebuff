@@ -36,12 +36,14 @@
 		<Unit filename="containers/local.hpp" />
 		<Unit filename="containers/remote.hpp" />
 		<Unit filename="iterators/remote_block_input_iterator.hpp" />
+		<Unit filename="iterators/remote_block_inputoutput_iterator.hpp" />
 		<Unit filename="iterators/remote_block_iterator.hpp" />
 		<Unit filename="iterators/remote_block_output_iterator.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="memory/allocator.hpp" />
 		<Unit filename="other/control.hpp" />
 		<Unit filename="sdk/addr64.hpp" />
+		<Unit filename="slicers/vector_slicer.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
