@@ -6,7 +6,7 @@
 #include <sdk/addr64.hpp>
 #include <cbe_mpi/sdk/addr64.hpp>
 #include <containers/local.hpp>
-#include <iterators/remote_block_iterator.hpp>
+#include <iterators/remote_block_base_iterator.hpp>
 
 
 struct remote
@@ -43,18 +43,18 @@ struct remote
 
     std::size_t size() { return size_; }
 
-    remote_block_iterator<T> begin() const
+    remote_block_base_iterator<T> begin() const
     {
       cbe_mpi::addr64 a;
       a.ull = addr.ull;
-      return remote_block_iterator<T>(a);
+      return remote_block_base_iterator<T>(a);
     }
 
-    remote_block_iterator<T> end() const
+    remote_block_base_iterator<T> end() const
     {
       cbe_mpi::addr64 a;
       a.ull = addr.ull+size_*sizeof(T);
-      return remote_block_iterator<T>(a);
+      return remote_block_base_iterator<T>(a);
     }
 
   };

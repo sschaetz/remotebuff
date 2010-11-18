@@ -11,17 +11,18 @@
  *
  */
 
-template<typename T, uint8_t depth>
+template<typename T>
 class remote_block_output_iterator
 {
 
 private: // ____________________________________________________________________
 
+  uint8_t depth;                                 //!< the number of buffers used
   int size;                                      //!< number of Ts in one buffer
   uint8_t current;                        //!<  which buffer is currently in use
 
-  int tags[depth];                        //!< tags we use for the DMA transfers
-  aligned_ptr<T, CBE_MPI_DATA_ALIGNMENT> buffers[depth];            //!< buffers
+  int * tags;                             //!< tags we use for the DMA transfers
+  aligned_ptr<T, CBE_MPI_DATA_ALIGNMENT> * buffers;                 //!< buffers
 
   int n;                                               //!< number of iterations
   addr64 base_address;              //!< base address of the data we access
@@ -34,16 +35,19 @@ public: // _____________________________________________________________________
   /**
    * ctor
    */
-  remote_block_output_iterator(int _size,
-    boost::function<int32_t (uint32_t n)> _addr_offset_calc, int * _tags) :
-    size(_size*sizeof(T)), current(0), n(0),
+  remote_block_output_iterator(uint8_t _depth, int _size,
+    boost::function<int32_t (uint32_t n)> _addr_offset_calc, int * _tags = 0) :
+    depth(_depth), size(_size*sizeof(T)), current(0), n(0),
     addr_offset_calc(_addr_offset_calc), dirty(false)
   {
+    tags = (int*) malloc(sizeof(int) * depth);
+    buffers = (aligned_ptr<T, CBE_MPI_DATA_ALIGNMENT> *) malloc(
+      sizeof(aligned_ptr<T, CBE_MPI_DATA_ALIGNMENT>)*depth);
     for(uint8_t i=0; i<depth; i++)               // allocate and initialize data
     {
       buffers[i] = (aligned_ptr<T, CBE_MPI_DATA_ALIGNMENT>)
         aligned_malloc<CBE_MPI_DATA_ALIGNMENT>(size);
-      tags[i] = _tags[i];
+      tags[i] = (_tags) ? _tags[i] : i+1;
     }
   }
 
@@ -62,7 +66,7 @@ public: // _____________________________________________________________________
    * assignment operator (to assign to remote vector for example)
    */
   inline remote_block_output_iterator & operator= (
-    const remote_block_iterator<T> & it)
+    const remote_block_base_iterator<T> & it)
   {
     base_address.ull = it.address().ull;
     init();
@@ -106,7 +110,7 @@ public: // _____________________________________________________________________
   /**
    * less than operator
    */
-  bool operator <(const remote_block_iterator<T> b) const
+  bool operator <(const remote_block_base_iterator<T> b) const
   {
            // offset that was used for data that is current after next increment
     int32_t next_offset = addr_offset_calc(n+1)*sizeof(T);
@@ -122,7 +126,7 @@ public: // _____________________________________________________________________
   /**
    * greater than operator
    */
-  bool operator >(const remote_block_iterator<T> b) const
+  bool operator >(const remote_block_base_iterator<T> b) const
   {
            // offset that was used for data that is current after next increment
     int32_t next_offset = addr_offset_calc(n+1)*sizeof(T);
@@ -161,6 +165,8 @@ public: // _____________________________________________________________________
       dma_synchronize_c(tags[i]);
       aligned_free(buffers[i]);
     }
+    free(tags);
+    free(buffers);
   }
 
 
