@@ -41,6 +41,15 @@ public: // _____________________________________________________________________
     depth(_depth), size(_size*sizeof(T)), current(0), ahead(depth/2), n(0),
     addr_offset_calc(_addr_offset_calc), dirty(false)
   {
+    if(depth < 3)                   // minimum depth size is 3 for this iterator
+    {
+      depth = 3;
+    }
+    else if(!(depth & 1))            // depth has to be uneven for this iterator
+    {
+      depth++;
+    }
+
     tags = (int*) malloc(sizeof(int) * depth);
     buffers = (aligned_ptr<T, CBE_MPI_DATA_ALIGNMENT> *) malloc(
       sizeof(aligned_ptr<T, CBE_MPI_DATA_ALIGNMENT>)*depth);

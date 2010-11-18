@@ -25,7 +25,7 @@ private: // ____________________________________________________________________
   aligned_ptr<T, CBE_MPI_DATA_ALIGNMENT> * buffers;                 //!< buffers
 
   int n;                                               //!< number of iterations
-  addr64 base_address;              //!< base address of the data we access
+  addr64 base_address;                   //!< base address of the data we access
                                        //! function to calculate the next access
   boost::function<int32_t (uint32_t n)> addr_offset_calc;
 
